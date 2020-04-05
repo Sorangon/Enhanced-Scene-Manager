@@ -1,5 +1,16 @@
 {
-    "name": "com.sorangontoolset.enhancedscenemanager",
-    "version": "1.0.1",
-    "displayName": "Enhanced Scene Manager"
+  "name": "com.sorangontoolset.enhancedscenemanager",
+  "unity": "2018.3",
+  "version": "0.0.1-preview",
+  "author": "Sorangon",
+  "displayName": "Enhanced Scene Manager",
+  "keywords": [
+    "scene"
+  ],
+  "description": "Use Enhanced Scene Manager to manage multi scene structures for your application.",
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sorangon/Enhanced-Scene-Manager-Package.git"
+  }
 }
