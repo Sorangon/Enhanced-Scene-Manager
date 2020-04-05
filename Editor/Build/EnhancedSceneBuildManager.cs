@@ -34,7 +34,8 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor.Build {
             var buildSettingsScenes = new List<EditorBuildSettingsScene>();
 
             //Add Startup Scene
-            var startupScene = new EditorBuildSettingsScene(AssetDatabase.GetAssetPath(EnhancedSceneManagerResources.Instance.StartupScene), true);
+            SceneAsset startupSceneAsset = Resources.Load<SceneAsset>("StartupScene");
+            var startupScene = new EditorBuildSettingsScene(AssetDatabase.GetAssetPath(startupSceneAsset), true);
             buildSettingsScenes.Add(startupScene);
 
             bool BuildContainsScene(string path) {
