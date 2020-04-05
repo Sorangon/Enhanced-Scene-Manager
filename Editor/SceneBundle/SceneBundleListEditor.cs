@@ -58,6 +58,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
                     }
                 },
 
+                //
                 //Filter if scene bundles are selected to automaticaly add it
                 onAddCallback = list => {
                     SceneBundle[] selectedBundles = EditorUtils.GetSelectedObjectsOfType<SceneBundle>();
