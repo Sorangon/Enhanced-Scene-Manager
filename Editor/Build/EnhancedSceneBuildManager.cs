@@ -105,8 +105,6 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor.Build {
             if(currentSceneList.PersistantScenesBundle != null) {
                 SerializedObject sceneBundleObject = new SerializedObject(currentSceneList.PersistantScenesBundle);
                 sceneBundleObject.FindProperty("sceneAssets").CleanNullOrSimialRefs();
-            } else {
-                throw new BuildFailedException("Build failed, inexistant persistant scene bundle");
             }
 
             SerializedObject sceneListSO = new SerializedObject(currentSceneList);
