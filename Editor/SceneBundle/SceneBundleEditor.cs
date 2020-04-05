@@ -119,7 +119,10 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
                 EditorGUILayout.HelpBox("Missing scene asset, cannot generate scene labels correcty. Ensure that each scene asset references aren't null in the Scene Bundle", MessageType.Error);
             }
             EditorGUILayout.Separator();
-            DisplayGeneratedLabelsPannel();
+
+            if(sceneLabels.arraySize > 0) {
+                DisplayGeneratedLabelsPannel();
+            }
 
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(description);
@@ -167,16 +170,21 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 
             if(selectedAssets != null) {
                 //Add all selected scenes in the list
-                int fromIndex = SceneAssets.arraySize - 1;
+                int addOffset = SceneAssets.arraySize > 0 ? 1 : 0;
+                int fromIndex = SceneAssets.arraySize - addOffset;
                 for(int i = 0; i < selectedAssets.Length; i++) {
                     SceneAssets.InsertArrayElementAtIndex(fromIndex + i);
-                    SceneAssets.GetArrayElementAtIndex(fromIndex + 1 + i).objectReferenceValue = selectedAssets[i];
+                    SceneAssets.GetArrayElementAtIndex(fromIndex + addOffset + i).objectReferenceValue = selectedAssets[i];
                     if(!EnhancedSceneBuildManager.IsSceneInBuild(selectedAssets[i]) && !updateBuildSettingFlag) {
                         updateBuildSettingFlag = true;
                     }
                 }
             } else {
-                SceneAssets.InsertArrayElementAtIndex(SceneAssets.arraySize - 1);
+                if(SceneAssets.arraySize > 0) {
+                    SceneAssets.InsertArrayElementAtIndex(SceneAssets.arraySize - 1);
+                } else {
+                    SceneAssets.InsertArrayElementAtIndex(0);
+                }
             }
 
             if(updateBuildSettingFlag) {
@@ -231,7 +239,9 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
                 sceneLabels.GetArrayElementAtIndex(i).stringValue = generatedLabels[i];
             }
 
-            sceneAssets.serializedObject.ApplyModifiedProperties();
+            if(sceneAssets.serializedObject.targetObject != null) {
+                sceneAssets.serializedObject.ApplyModifiedProperties();
+            }
         }
 
 
@@ -274,6 +284,8 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
         /// <param name="targetBundle"></param>
         /// <returns></returns>
         internal static SceneAsset[] GetBundleScenesAssets(SceneBundle targetBundle) {
+            if(targetBundle == null) return null;
+
             SerializedObject tbSerialized = new SerializedObject(targetBundle);
             SerializedProperty scenesProp = tbSerialized.FindProperty("sceneAssets");
             SceneAsset[] assets = new SceneAsset[scenesProp.arraySize];

@@ -46,12 +46,14 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor.Build {
             }
 
             //Add persistant scenes
-            SceneAsset[] peristantScenes = SceneBundleEditor.GetBundleScenesAssets(currentSceneList.PersistantScenesBundle);
-            foreach(SceneAsset sceneAsset in peristantScenes) {
-                var persistantBuildScene = new EditorBuildSettingsScene(AssetDatabase.GetAssetPath(sceneAsset), true);
+            if(currentSceneList.PersistantScenesBundle != null) {
+                SceneAsset[] peristantScenes = SceneBundleEditor.GetBundleScenesAssets(currentSceneList.PersistantScenesBundle);
+                foreach(SceneAsset sceneAsset in peristantScenes) {
+                    var persistantBuildScene = new EditorBuildSettingsScene(AssetDatabase.GetAssetPath(sceneAsset), true);
 
-                if(!BuildContainsScene(persistantBuildScene.path)) {
-                    buildSettingsScenes.Add(persistantBuildScene);
+                    if(!BuildContainsScene(persistantBuildScene.path)) {
+                        buildSettingsScenes.Add(persistantBuildScene);
+                    }
                 }
             }
 

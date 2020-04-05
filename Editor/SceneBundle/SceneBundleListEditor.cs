@@ -61,31 +61,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
                 //
                 //Filter if scene bundles are selected to automaticaly add it
                 onAddCallback = list => {
-                    SceneBundle[] selectedBundles = EditorUtils.GetSelectedObjectsOfType<SceneBundle>();
-                    SerializedProperty listArray = list.serializedProperty;
-                    if(selectedBundles != null) {
-                        for(int i = 0; i < selectedBundles.Length; i++) {
-                            if(listArray.arraySize > 0) {
-                                listArray.InsertArrayElementAtIndex(listArray.arraySize - 1);
-                            } else {
-                                listArray.InsertArrayElementAtIndex(0);
-                            }
-                            listArray.GetArrayElementAtIndex(listArray.arraySize - 1).objectReferenceValue = selectedBundles[i];
-
-                        }
-
-                        //Update build scenes only if new scenes are added
-                        if(target == EnhancedSceneManager.GetCurrentSceneList()) {
-                            UpdateBuildSettings();
-                        }
-
-                    } else {
-                        //Just add an element
-                        listArray.InsertArrayElementAtIndex(listArray.arraySize - 1);
-                    }
-
-                    CheckBundles();
-
+                    AddSceneBundle(list.serializedProperty);
                 },
 
                 //Check if there are more than one level to enable delete button
@@ -161,6 +137,42 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
         #endregion
 
         #region Scenes
+
+        /// <summary>
+        /// Add a scene bundle to the current list
+        /// </summary>
+        private void AddSceneBundle(SerializedProperty listArray) {
+            SceneBundle[] selectedBundles = EditorUtils.GetSelectedObjectsOfType<SceneBundle>();
+            if(selectedBundles != null) {
+                for(int i = 0; i < selectedBundles.Length; i++) {
+                    if(listArray.arraySize > 0) {
+                        listArray.InsertArrayElementAtIndex(listArray.arraySize - 1);
+                    } else {
+                        listArray.InsertArrayElementAtIndex(0);
+                    }
+                    listArray.GetArrayElementAtIndex(listArray.arraySize - 1).objectReferenceValue = selectedBundles[i];
+
+                }
+
+                //Update build scenes only if new scenes are added
+                if(target == EnhancedSceneManager.GetCurrentSceneList()) {
+                    UpdateBuildSettings();
+                }
+
+            } else {
+                //Just add an element
+                if(listArray.arraySize > 0) {
+                    listArray.InsertArrayElementAtIndex(listArray.arraySize - 1);
+                } else {
+                    listArray.InsertArrayElementAtIndex(0);
+                    
+                }
+            }
+
+            CheckBundles();
+            serializedObject.ApplyModifiedProperties();
+        }
+
         /// <summary>
         /// Checks all referenced bundles for similar or missing refs
         /// </summary>

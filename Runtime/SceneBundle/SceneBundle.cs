@@ -13,13 +13,13 @@ namespace SorangonToolset.EnhancedSceneManager {
 	[CreateAssetMenu(menuName = "Enhanced Scene Manager/Scene Bundle", fileName = "NewSceneBundle", order = 150)]
 	public class SceneBundle : ScriptableObject {
 		#region Data
-		[SerializeField] private string[] scenes = new string[1];
+		[SerializeField] private string[] scenes = { };
 		[SerializeField, HideInInspector, TextArea] private string description = string.Empty;
         #endregion
 
 #if UNITY_EDITOR
         #region Editor Data
-        [SerializeField, HideInInspector] internal SceneAsset[] sceneAssets = new SceneAsset[1];
+        [SerializeField, HideInInspector] internal SceneAsset[] sceneAssets = { };
         #endregion
 #endif
 
@@ -27,15 +27,6 @@ namespace SorangonToolset.EnhancedSceneManager {
         public int ScenesCount => scenes.Length;
 		public string Description => description;
 		#endregion
-
-		#region Callbacks
-#if UNITY_EDITOR
-		private void Reset() {
-			scenes = new string[1];
-			sceneAssets = new SceneAsset[1];
-		}
-#endif
-        #endregion
 
         #region Utils
 		/// <summary>
