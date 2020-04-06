@@ -128,7 +128,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
         private void OnDisable() {
             //Cleans
             if(hasNullReferences || hasSimilarReferences) {
-                sceneBundleList.serializedProperty.CleanNullOrSimialRefs();
+                sceneBundleList.serializedProperty.CleanNullOrSimilarRefs();
                 serializedObject.ApplyModifiedProperties();
                 UpdateBuildSettings();
             }
@@ -170,7 +170,6 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
             }
 
             CheckBundles();
-            serializedObject.ApplyModifiedProperties();
         }
 
         /// <summary>
@@ -187,7 +186,6 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
             CheckBundles();
 
             if(!hasNullReferences) {
-                serializedObject.ApplyModifiedProperties();
                 EnhancedSceneBuildManager.UpdateBuildScenes();
             }
         }

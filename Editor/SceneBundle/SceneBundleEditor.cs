@@ -2,8 +2,10 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEditor;
 using UnityEditorInternal;
+using UnityEditor.SceneManagement;
 using SorangonToolset.EnhancedSceneManager.CoreEditor.Build;
 
 namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
@@ -56,17 +58,26 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
                         label.text = "Scene " + index;
                     }
 
+                    SceneBundleList currentSceneList = EnhancedSceneManager.GetCurrentSceneList();
+
                     EditorGUI.BeginChangeCheck();
                     SerializedProperty property = sceneAssetsList.serializedProperty.GetArrayElementAtIndex(index);
                     EditorGUI.PropertyField(propertyRect, property, label);
-                    if(EditorGUI.EndChangeCheck()) {
-                        //Update the generated labels
-                        UpdateScenesLabels();
 
-                        //If this scene doesn't exist in the build settings, refresh it
-                        if(property.objectReferenceValue != null && !EnhancedSceneBuildManager.IsSceneInBuild(property.objectReferenceValue as SceneAsset)) {
-                            EnhancedSceneBuildManager.UpdateBuildScenes();
+                    if(EditorGUI.EndChangeCheck()) {
+                        if(currentSceneList.PersistantScenesBundle != target && (property.objectReferenceValue as SceneAsset).IsPersistantScene()) {
+                            Debug.LogWarning("Cannot register persistant scenes");
+                            property.objectReferenceValue = null;
+                        } else {
+                            //Update the generated labels
+                            UpdateScenesLabels();
+
+                            //If this scene doesn't exist in the build settings, refresh it
+                            if(property.objectReferenceValue != null && !EnhancedSceneBuildManager.IsSceneInBuild(property.objectReferenceValue as SceneAsset)) {
+                                EnhancedSceneBuildManager.UpdateBuildScenes();
+                            }
                         }
+
                     }
 
                     if(index == 0) {
@@ -93,7 +104,6 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
                     }
                     prop.DeleteArrayElementAtIndex(list.index);
                     UpdateScenesLabels();
-                    serializedObject.ApplyModifiedProperties();
                     EnhancedSceneBuildManager.UpdateBuildScenes();
                 }
             };
@@ -108,7 +118,6 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 
         public override void OnInspectorGUI() {
             serializedObject.Update();
-
             sceneAssetsList.DoLayoutList();
 
             if(hasSimialarReference) {
@@ -126,15 +135,22 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(description);
+            
+            EditorGUILayout.Space();
+
+            if(GUILayout.Button("Add Opened Scenes")) {
+                AddOpenedScenes();
+            }
+
             serializedObject.ApplyModifiedProperties();
         }
 
         private void OnDisable() {
-            UpdateScenesLabels();
             if(hasNullReference || hasSimialarReference) {
-                sceneAssetsList.serializedProperty.CleanNullOrSimialRefs();
-                serializedObject.ApplyModifiedProperties();
+                sceneAssetsList.serializedProperty.CleanNullOrSimilarRefs();
             }
+            UpdateScenesLabels();
+            serializedObject.ApplyModifiedPropertiesWithoutUndo();
             Undo.undoRedoPerformed -= OnUndo;
         }
         #endregion
@@ -173,6 +189,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
                 int addOffset = SceneAssets.arraySize > 0 ? 1 : 0;
                 int fromIndex = SceneAssets.arraySize - addOffset;
                 for(int i = 0; i < selectedAssets.Length; i++) {
+                    if(selectedAssets[i].IsPersistantScene()) continue; //Cannot add persistant scenes
                     SceneAssets.InsertArrayElementAtIndex(fromIndex + i);
                     SceneAssets.GetArrayElementAtIndex(fromIndex + addOffset + i).objectReferenceValue = selectedAssets[i];
                     if(!EnhancedSceneBuildManager.IsSceneInBuild(selectedAssets[i]) && !updateBuildSettingFlag) {
@@ -188,7 +205,6 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
             }
 
             if(updateBuildSettingFlag) {
-                serializedObject.ApplyModifiedProperties();
                 EnhancedSceneBuildManager.UpdateBuildScenes();
             }
 
@@ -196,9 +212,29 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
         }
 
         /// <summary>
+        /// Add the currently loaded scenes to the 
+        /// </summary>
+        private void AddOpenedScenes() {
+            for(int i = 0; i < EditorSceneManager.sceneCount; i++) {
+                SceneAsset sceneAsset = AssetDatabase.LoadAssetAtPath(EditorSceneManager.GetSceneAt(i).path, typeof(SceneAsset)) as SceneAsset;
+                if(SceneAssets.ContainsObjects(sceneAsset)) continue;
+                if(sceneAsset.IsPersistantScene()) continue;
+
+                if(SceneAssets.arraySize > 0) {
+                    SceneAssets.InsertArrayElementAtIndex(SceneAssets.arraySize - 1);
+                } else {
+                    SceneAssets.InsertArrayElementAtIndex(0);
+                }
+
+                SceneAssets.GetArrayElementAtIndex(SceneAssets.arraySize - 1).objectReferenceValue = sceneAsset;
+                UpdateScenesLabels();
+            }
+        }
+
+        /// <summary>
         /// Update the scene labels in the bundle
         /// </summary>
-        public void UpdateScenesLabels() {
+        private void UpdateScenesLabels() {
             hasNullReference = false;
             hasSimialarReference = false;
 
@@ -238,10 +274,6 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
                 sceneLabels.InsertArrayElementAtIndex(i);
                 sceneLabels.GetArrayElementAtIndex(i).stringValue = generatedLabels[i];
             }
-
-            if(sceneAssets.serializedObject.targetObject != null) {
-                sceneAssets.serializedObject.ApplyModifiedProperties();
-            }
         }
 
 
@@ -251,7 +283,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
         /// <param name="obj"></param>
         public static void GenerateSceneLabels(SerializedObject obj) {
             SerializedProperty assets = obj.FindProperty("sceneAssets");
-            assets.CleanNullOrSimialRefs();
+            assets.CleanNullOrSimilarRefs();
             List<string> sceneLabels = new List<string>();
 
             for(int i = 0; i < assets.arraySize; i++) {
@@ -263,6 +295,10 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
                 obj.FindProperty("scenes"),
                 sceneLabels
                 );
+
+            if(obj.targetObject != null) {
+                obj.ApplyModifiedPropertiesWithoutUndo();
+            }
         }
 
         #endregion
@@ -293,7 +329,6 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
                 assets[i] = scenesProp.GetArrayElementAtIndex(i).objectReferenceValue as SceneAsset;
             }
             return assets;
-
         }
 
         #endregion

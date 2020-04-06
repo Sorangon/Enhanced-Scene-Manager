@@ -65,6 +65,23 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
         }
         #endregion
 
+        #region Scene 
+        /// <summary>
+        /// Return true if the scene belongs to the persistant scene bundle
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <returns></returns>
+        public static bool IsPersistantScene(this SceneAsset scene) {
+            SceneBundleList currentList = EnhancedSceneManager.GetCurrentSceneList();
+
+            for(int i = 0; i < currentList.PersistantScenesBundle.ScenesCount; i++) {
+                if(currentList.PersistantScenesBundle.ContainsScene(scene.name)) return true;
+            }
+
+            return false;
+        }
+        #endregion
+
         #region Enumerables
         /// <summary>
         /// Check for similar or null references in the Seiralized property
@@ -99,7 +116,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
         /// Clean every null or simial reference in the serialized property array
         /// </summary>
         /// <param name="property"></param>
-        public static void CleanNullOrSimialRefs(this SerializedProperty property) {
+        public static void CleanNullOrSimilarRefs(this SerializedProperty property) {
             if(!property.isArray) return;
             List<Object> objectHistory = new List<Object>();
             List<int> elementsToDeleteId = new List<int>();
