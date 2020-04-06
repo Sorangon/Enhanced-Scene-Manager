@@ -84,7 +84,7 @@ You also can call this method from a `Unity Event`.
 
 &nbsp;
 
-## Recomended Usages
+## Recommended Usages
 
 <ins><b>- Manage your application with Persistant Scene Bundle.</ins></b></br>
 The Persistant Scene Bundle can <b>manage the core logic of your application</b>. Use those scenes to setup your game manager, loading screens, runtime debugging tools and much more !
