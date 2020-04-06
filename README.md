@@ -19,4 +19,17 @@ Once the addon is imported in your project, two new types of assets appeared in 
 
 To setup this, go to "Window/Enhanced Scene Manager" to call the Enhanced Scene Manager window. 
 
-By default the window suggest you to create a new `Scene Bundle List`. Create a new one and create new scene bundles.
+By default the window suggest you to create a new `Scene Bundle List`. Create a new one.
+Once your `Scene Bundle List` is ready, you can fill it with `Scene Bundles`, refer a Persistant Scene Bundle if your application archytecture requires it.
+
+![Scene Bundle List](./.Documentation/img_SceneBundleList.PNG)
+
+To create a new `Scene Bundle`, go to <b>"Create/Enhanced Scene Manager/Scene Bundle".</b>
+In this one, refer all the `Scene Assets` you want to load into it (tip : Lock the inspector, select the `Scene Assets` and click + button to directly refer selected Scenes).
+
+Register your bundles in your current `Scene Bundle List` to add it to the build setting and access it from the Enhanced Scene Manager Window.
+
+![Enhanced Scene Manager Window](./.Documentation/img_EnhancedSceneManagerWindow.PNG)
+
+On Enhanced Scene Manager, select `Scene Bundle` to load it and select <b>A</b> to select his asset.
+
