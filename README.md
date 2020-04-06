@@ -3,7 +3,7 @@ This plugin allow you to create levels using multiple scenes to optimize your wo
 
 &nbsp;
 
-# How to setup ?
+## How to setup ?
 
 ### <ins><b>1 - Add the plugin to your project</b></ins>
 This plugin should be cloned into your Unity project to access new updates. It's highly recommended to use git submodules : https://git-scm.com/book/en/v2/Git-Tools-Submodules
@@ -84,7 +84,7 @@ You also can call this method from a `Unity Event`.
 
 &nbsp;
 
-### <ins><b>4 - Recommended usages </ins></b>
+## Recomended Usages
 
 <ins><b>- Manage your application with Persistant Scene Bundle.</ins></b></br>
 The Persistant Scene Bundle can <b>manage the core logic of your application</b>. Use those scenes to setup your game manager, loading screens, runtime debugging tools and much more !
