@@ -90,7 +90,7 @@ You also can call this method from a `Unity Event`.
 The Persistant Scene Bundle can <b>manage the core logic of your application</b>. Use those scenes to setup your game manager, loading screens, runtime debugging tools and much more !
 
 
-<ins><b>- Seperate your scene to make teamwork easier.</ins></b></br>
+<ins><b>- Separate your scene to make teamwork easier.</ins></b></br>
 For example, for a level you can make a logic scene that manage the logic and gameplay part and also make a graphic level on which you will create your level environment art. This allow you and your team <b>to work simultaneously on the same level</b> on his proper part <b>without having merge problems</b>.
 
 
