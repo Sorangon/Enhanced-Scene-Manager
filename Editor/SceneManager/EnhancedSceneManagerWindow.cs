@@ -33,9 +33,10 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 
 		#region Menu
 		public void AddItemsToMenu(GenericMenu menu) {
-			menu.AddItem(new GUIContent("One Column"), displayMode == DisplayMode.OneColumn, () => ChangeDisplayMode(DisplayMode.OneColumn));
-			menu.AddItem(new GUIContent("Two Column"), displayMode == DisplayMode.TwoColumns, () => ChangeDisplayMode(DisplayMode.TwoColumns));
-			menu.AddItem(new GUIContent("Three Column"), displayMode == DisplayMode.ThreeColumns, () => ChangeDisplayMode(DisplayMode.ThreeColumns));
+			//TODO : Fix window ratio before enable this
+			//menu.AddItem(new GUIContent("One Column"), displayMode == DisplayMode.OneColumn, () => ChangeDisplayMode(DisplayMode.OneColumn));
+			//menu.AddItem(new GUIContent("Two Column"), displayMode == DisplayMode.TwoColumns, () => ChangeDisplayMode(DisplayMode.TwoColumns));
+			//menu.AddItem(new GUIContent("Three Column"), displayMode == DisplayMode.ThreeColumns, () => ChangeDisplayMode(DisplayMode.ThreeColumns));
 		}
 		#endregion
 
@@ -52,6 +53,9 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 				DisplaySceneBundles(sceneList);
 			} else {
 				EditorGUILayout.HelpBox("Any current scene list is currently existing, create a new one",MessageType.Warning);
+				if(GUILayout.Button("Create Scene Bundle List")) {
+					CreateSceneBundleList();
+				}
 			}
 
 			EditorGUILayout.Separator();
@@ -59,13 +63,31 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 			DisplayCurrentSceneList();
 			EditorGUILayout.EndScrollView();
 		}
-		#endregion
+        #endregion
 
-		#region Display Scene Bundles
+        #region Scene Bundle & List
 		/// <summary>
-		/// Display the full list of scene bundles
+		/// Creates a new Scene Bundle List in the target bundle
 		/// </summary>
-		private void DisplaySceneBundles(SceneBundleList targetList) {
+		private void CreateSceneBundleList() {
+			string path = EditorUtility.SaveFilePanelInProject("Create new Scene Bundle List", "NewSceneBundleList.asset", "asset", "Please enter a name to the Scene Bundle list");
+
+			if(path.Length <= 0) return;
+
+			SceneBundleList newSceneBundleList = SceneBundleList.CreateInstance<SceneBundleList>();
+			AssetDatabase.CreateAsset(newSceneBundleList, path);
+			AssetDatabase.SaveAssets();
+			AssetDatabase.Refresh();
+
+			EditorEnhancedSceneManager.SetSceneBundleListHasCurrent(newSceneBundleList);
+		}
+        #endregion
+
+        #region Display Scene Bundles
+        /// <summary>
+        /// Display the full list of scene bundles
+        /// </summary>
+        private void DisplaySceneBundles(SceneBundleList targetList) {
 			EditorGUILayout.LabelField("Load Scene Bundle");
 
 			int columnsPerRow = (int)displayMode;

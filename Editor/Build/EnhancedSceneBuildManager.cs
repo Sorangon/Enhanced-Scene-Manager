@@ -29,6 +29,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor.Build {
         /// </summary>
         public static void UpdateBuildScenes() {
             SceneBundleList currentSceneList = EnhancedSceneManager.GetCurrentSceneList();
+            if(currentSceneList == null) return;
 
             //Create the container of build scenes
             var buildSettingsScenes = new List<EditorBuildSettingsScene>();

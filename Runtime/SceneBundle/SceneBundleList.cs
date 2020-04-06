@@ -6,7 +6,7 @@ namespace SorangonToolset.EnhancedSceneManager {
 	/// <summary>
 	/// A scene list contains multiple scene groups, it will manage all the scene to load or to make persistant
 	/// </summary>
-	[CreateAssetMenu(menuName = "Enhanced Scene Manager/Scene List", fileName = "NewSceneGroup", order = 150)]
+	[CreateAssetMenu(menuName = "Enhanced Scene Manager/Scene Bundle List", fileName = "NewSceneBundleList", order = 150)]
 	public class SceneBundleList : ScriptableObject{
 		#region Settings
 		[HideInInspector, SerializeField, Tooltip("The bundle of persistant scenes that are are never unloaded")]
