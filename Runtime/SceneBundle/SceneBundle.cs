@@ -28,12 +28,19 @@ namespace SorangonToolset.EnhancedSceneManager {
 		public string Description => description;
 		#endregion
 
-        #region Utils
+        #region Loading
 		/// <summary>
 		/// Load this scene bundle
 		/// </summary>
 		public void Load() {
 			EnhancedSceneManager.LoadSceneBundle(this);
+		}
+
+		/// <summary>
+		/// Load this scene bundle async
+		/// </summary>
+		public void LoadAsync() {
+			EnhancedSceneManager.LoadSceneBundle(this, true);
 		}
         #endregion
 
