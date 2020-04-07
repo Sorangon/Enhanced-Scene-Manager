@@ -63,6 +63,10 @@ You also can set the current used Scene Bundle List (Note : For example you can 
 Loading a scene bundle is pretty easy. You just need a Scene Bundle reference and call the <b>Load()</b> method from it.
 
 ```cs
+public void Load();
+```
+
+```cs
 using UnityEngine;
 using SorangonToolset.EnhancedSceneManager;
 
@@ -78,7 +82,15 @@ public class LevelLoader : MonoBehaviour{
 }
 ```
 
-You also can call this method from a `Unity Event`.
+You also can call LoadAsync().This is recommended to use more often than Load().
+
+```cs
+public void LoadAsync();
+```
+
+You can call those methods from a `Unity Event`.
+
+
 
 <b>! The level you want to load must be registered in the <ins>Current Scene List</ins> !</b>
 

@@ -52,7 +52,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 			if(sceneList) {
 				DisplaySceneBundles(sceneList);
 			} else {
-				EditorGUILayout.HelpBox("Any current scene list is currently existing, create a new one",MessageType.Warning);
+				EditorGUILayout.HelpBox("Any current scene list is currently existing. Create a new one",MessageType.Warning);
 				if(GUILayout.Button("Create Scene Bundle List")) {
 					CreateSceneBundleList();
 				}
@@ -144,7 +144,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 		/// </summary>
 		private void DisplayCurrentSceneList() {
 			EditorGUI.BeginChangeCheck();
-			SceneBundleList list = EditorGUILayout.ObjectField("Current Scene List", EnhancedSceneManager.GetCurrentSceneList(), typeof(SceneBundleList), false) as SceneBundleList;
+			SceneBundleList list = EditorGUILayout.ObjectField("Current Bundle List", EnhancedSceneManager.GetCurrentSceneList(), typeof(SceneBundleList), false) as SceneBundleList;
 
 			if(EditorGUI.EndChangeCheck() && list != null) {
 				EditorEnhancedSceneManager.SetSceneBundleListHasCurrent(list);

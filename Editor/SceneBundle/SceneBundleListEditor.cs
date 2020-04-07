@@ -115,7 +115,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
             }
 
             if(EnhancedSceneManager.GetCurrentSceneList() == target) {
-                EditorGUILayout.HelpBox("Current Level List", MessageType.None);
+                EditorGUILayout.HelpBox("Current Scene Bundle List", MessageType.None);
             } else {
                 if(GUILayout.Button("Set as current")) {
                     EditorEnhancedSceneManager.SetSceneBundleListHasCurrent(target as SceneBundleList);
