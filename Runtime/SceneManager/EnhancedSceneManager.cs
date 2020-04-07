@@ -211,30 +211,24 @@ namespace SorangonToolset.EnhancedSceneManager {
 			//Get scenes in the bundle
 			var scenes = bundle.GetScenes();
 
-			AsyncOperation asyncOp;
-			asyncOp = SceneManager.LoadSceneAsync(scenes[0], hasToFullyReload ? LoadSceneMode.Single : LoadSceneMode.Additive);
+			AsyncOperation loadingOp;
+			loadingOp = SceneManager.LoadSceneAsync(scenes[0], hasToFullyReload ? LoadSceneMode.Single : LoadSceneMode.Additive);
+			yield return loadingOp;
 
-			while(asyncOp.isDone) {
-				yield return null;
-			}
 
 			setActiveScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1); //Get the loaded scene to set it as active later
 
 			for(int i = 1; i < scenes.Length; i++) {
-				asyncOp = SceneManager.LoadSceneAsync(scenes[i], LoadSceneMode.Additive);
-				while(asyncOp.isDone) {
-					yield return null;
-				}
+				loadingOp = SceneManager.LoadSceneAsync(scenes[i], LoadSceneMode.Additive);
+				yield return loadingOp;
 			}
 
 			//Check if persistant scenes are correctly loaded
 			if(persistantScenesCount != currentSceneList.PersistantScenesBundle.ScenesCount) {
 				//Re-open persistant scenes
 				for(int i = 0; i < currentSceneList.PersistantScenesBundle.ScenesCount; i++) {
-					asyncOp = SceneManager.LoadSceneAsync(currentSceneList.PersistantScenesBundle.GetSceneAtID(i), LoadSceneMode.Additive);
-					while(asyncOp.isDone) {
-						yield return null;
-					}
+					loadingOp = SceneManager.LoadSceneAsync(currentSceneList.PersistantScenesBundle.GetSceneAtID(i), LoadSceneMode.Additive);
+					yield return loadingOp;
 				}
 			}
 
@@ -252,10 +246,7 @@ namespace SorangonToolset.EnhancedSceneManager {
 			//Unload current scene except persistant ones, skip one scene if all scenes have to be reloaded
 			for(int i = hasToFullyReload ? 1 : 0; i < scenesToUnload.Count; i++) {
 				AsyncOperation unload = SceneManager.UnloadSceneAsync(scenesToUnload[i]);
-
-				while(unload.isDone) {
-					yield return null;
-				}
+				yield return unload;
 			}
 
 			isUnloading = false;
