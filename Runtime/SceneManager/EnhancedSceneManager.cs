@@ -16,7 +16,8 @@ namespace SorangonToolset.EnhancedSceneManager {
 		private static Scene setActiveScene;
 		private static bool isLoading = false;
 		private static bool isUnloading = false;
-		private static LoadingSceneHandler loadingHandler = null;
+
+		internal static EnhancedSceneOrchestrator sceneOrchestrator = null;
 		#endregion
 
 		#region Events and Delegates
@@ -70,10 +71,7 @@ namespace SorangonToolset.EnhancedSceneManager {
         public static void LoadSceneBundle(SceneBundle bundle, bool async = false) {
 			if(!CanLoad(bundle)) return;
 			onTriggerLoading?.Invoke();
-			GameObject handlerGo = new GameObject();
-			GameObject.DontDestroyOnLoad(handlerGo);
-			loadingHandler = handlerGo.AddComponent<LoadingSceneHandler>();
-			loadingHandler.StartCoroutine(LoadingProcessCoroutine(bundle, async));
+			sceneOrchestrator.StartLoadingCoroutine(LoadingProcessCoroutine(bundle, async)); //Call a start coroutine on the scene oorchestrator
 		}
 		
 		/// <summary>
@@ -183,6 +181,7 @@ namespace SorangonToolset.EnhancedSceneManager {
 			List<Scene> scenesToUnload = GetScenesToUnload(out bool hasToFullyReload, out int persistantScenesCount);
 			yield return UnloadingAsyncCoroutine(scenesToUnload, hasToFullyReload);
 
+			//Load scenes
 			isLoading = true;
 			if(loadAsync) {
 				yield return LoadingAsyncCoroutine(bundle, hasToFullyReload, persistantScenesCount);
@@ -192,12 +191,12 @@ namespace SorangonToolset.EnhancedSceneManager {
 
 			//Has to wait for a complete frame
 			yield return null;
+
 			isLoading = false;
 			SceneManager.SetActiveScene(setActiveScene);
 			onSceneAllLoaded?.Invoke();
 
-
-			Object.Destroy(loadingHandler.gameObject);//Destroy the coroutine handler
+			sceneOrchestrator.StopLoadingCoroutine(); //Stops the coroutine handler
 			yield return null;
 		}
 
@@ -258,15 +257,10 @@ namespace SorangonToolset.EnhancedSceneManager {
 			}
 
 			isUnloading = false;
-			onSceneAllUnloaded.Invoke();
+			onSceneAllUnloaded?.Invoke();
 
 			yield return null;
 		}
         #endregion
     }
 }
-
-/// <summary>
-/// This class is just a coroutine handler used by the scene manager to use coroutines
-/// </summary>
-public class LoadingSceneHandler : MonoBehaviour { }

@@ -6,7 +6,7 @@ namespace SorangonToolset.EnhancedSceneManager.Internal {
     /// <summary>
     /// Initialize the Enhanced Scene Manager on application start
     /// </summary>
-    [DefaultExecutionOrder(-1000)] //Execute first
+    [DefaultExecutionOrder(-500)] //Execute after scene orcherstrator
     public sealed class StartupSceneManager : MonoBehaviour {
         #region Current
         private static bool initialized = false;
