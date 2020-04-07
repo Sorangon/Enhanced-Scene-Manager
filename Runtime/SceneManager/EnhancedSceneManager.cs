@@ -91,11 +91,13 @@ namespace SorangonToolset.EnhancedSceneManager {
 				SceneManager.LoadScene(scenes[i], LoadSceneMode.Additive);
 			}
 
-			//Check if persistant scenes are correctly loaded
-			if(persistantScenesCount != currentSceneList.PersistantScenesBundle.ScenesCount) {
-				//Re-open persistant scenes
-				for(int i = 0; i < currentSceneList.PersistantScenesBundle.ScenesCount; i++) {
-					SceneManager.LoadScene(currentSceneList.PersistantScenesBundle.GetSceneAtID(i), LoadSceneMode.Additive);
+			if(persistantScenesCount >= 0) {
+				//Check if persistant scenes are correctly loaded
+				if(persistantScenesCount != currentSceneList.PersistantScenesBundle.ScenesCount) {
+					//Re-open persistant scenes
+					for(int i = 0; i < currentSceneList.PersistantScenesBundle.ScenesCount; i++) {
+						SceneManager.LoadScene(currentSceneList.PersistantScenesBundle.GetSceneAtID(i), LoadSceneMode.Additive);
+					}
 				}
 			}
 		}
@@ -140,27 +142,37 @@ namespace SorangonToolset.EnhancedSceneManager {
 		/// <returns></returns>
 		private static List<Scene> GetScenesToUnload(out bool hasToFullyReload, out int persistantScenesCount) {
 			hasToFullyReload = false;
-			persistantScenesCount = 0;
 			//This value will be incremented each persisant scene loaded, will be checked later to get missing persistant scenes
-			persistantScenesCount = 0;
+			persistantScenesCount = currentSceneList.PersistantScenesBundle != null ?  0 : -1; //Pesistant are equal to -1 if any persistant level has been referenced
+
 			var dirtyScenes = new List<Scene>();
 
-			for(int i = 0; i < SceneManager.sceneCount; i++) {
-				//Filter persistant scenes
-				Scene scene = SceneManager.GetSceneAt(i);
+			if(persistantScenesCount >= 0) {
+				//Filter persistant scenes if there are referenced
+				for(int i = 0; i < SceneManager.sceneCount; i++) {
+					//Filter persistant scenes
+					Scene scene = SceneManager.GetSceneAt(i);
 
-				//Check if iterated scene is persisant
-				var persisantFlag = false;
-				for(int j = 0; j < currentSceneList.PersistantScenesBundle.ScenesCount; j++) {
-					if(scene.name == currentSceneList.PersistantScenesBundle.GetSceneAtID(j)) {
-						persisantFlag = true;
+					//Check if iterated scene is persisant
+					var persisantFlag = false;
+					for(int j = 0; j < currentSceneList.PersistantScenesBundle.ScenesCount; j++) {
+						if(scene.name == currentSceneList.PersistantScenesBundle.GetSceneAtID(j)) {
+							persisantFlag = true;
+						}
+					}
+
+					if(persisantFlag) {
+						//Doesn't add persistant scenes to dirty list
+						persistantScenesCount++; //Count persistant scenes to check if each one is correctly loaded 
+					} else {
+						dirtyScenes.Add(scene);
 					}
 				}
-
-				if(persisantFlag) {
-					//Doesn't add persistant scenes to dirty list
-					persistantScenesCount++; //Count persistant scenes to check if each one is correctly loaded 
-				} else {
+			} else {
+				//Simply add all scenes if there isn't persistant bundle
+				for(int i = 0; i < SceneManager.sceneCount; i++) {
+					//Filter persistant scenes
+					Scene scene = SceneManager.GetSceneAt(i);
 					dirtyScenes.Add(scene);
 				}
 			}
@@ -215,7 +227,6 @@ namespace SorangonToolset.EnhancedSceneManager {
 			loadingOp = SceneManager.LoadSceneAsync(scenes[0], hasToFullyReload ? LoadSceneMode.Single : LoadSceneMode.Additive);
 			yield return loadingOp;
 
-
 			setActiveScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1); //Get the loaded scene to set it as active later
 
 			for(int i = 1; i < scenes.Length; i++) {
@@ -223,12 +234,14 @@ namespace SorangonToolset.EnhancedSceneManager {
 				yield return loadingOp;
 			}
 
-			//Check if persistant scenes are correctly loaded
-			if(persistantScenesCount != currentSceneList.PersistantScenesBundle.ScenesCount) {
-				//Re-open persistant scenes
-				for(int i = 0; i < currentSceneList.PersistantScenesBundle.ScenesCount; i++) {
-					loadingOp = SceneManager.LoadSceneAsync(currentSceneList.PersistantScenesBundle.GetSceneAtID(i), LoadSceneMode.Additive);
-					yield return loadingOp;
+			if(persistantScenesCount >= 0) {
+				//Check if persistant scenes are correctly loaded
+				if(persistantScenesCount != currentSceneList.PersistantScenesBundle.ScenesCount) {
+					//Re-open persistant scenes
+					for(int i = 0; i < currentSceneList.PersistantScenesBundle.ScenesCount; i++) {
+						loadingOp = SceneManager.LoadSceneAsync(currentSceneList.PersistantScenesBundle.GetSceneAtID(i), LoadSceneMode.Additive);
+						yield return loadingOp;
+					}
 				}
 			}
 

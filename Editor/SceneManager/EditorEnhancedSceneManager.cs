@@ -33,6 +33,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 			var saveFlag = false;
 
 			SceneAsset[] persistantScenesAssets = SceneBundleEditor.GetBundleScenesAssets(CurrentSceneList.PersistantScenesBundle);
+			bool hasPersistantBundle = persistantScenesAssets != null;
 			for (int i = 0; i < EditorSceneManager.sceneCount; i++) {
 				//Filter persistant scenes
 				Scene scene = EditorSceneManager.GetSceneAt(i);
@@ -44,9 +45,11 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 
 				//Check if iterated scene is persisant
 				var persisantFlag = false;
-				for (int j = 0; j < persistantScenesAssets.Length; j++) {
-					if (scene.name == persistantScenesAssets[j].name) {
-						persisantFlag = true;
+				if(hasPersistantBundle) {
+					for (int j = 0; j < persistantScenesAssets.Length; j++) {
+						if (scene.name == persistantScenesAssets[j].name) {
+							persisantFlag = true;
+						}
 					}
 				}
 
@@ -90,7 +93,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 			}
 
 			//Check if persistant scenes are correctly loaded
-			if (persistantScenesCheckCount != persistantScenesAssets.Length) {
+			if (hasPersistantBundle && persistantScenesCheckCount != persistantScenesAssets.Length) {
 				//Re-open persistant scenes
 				for (int i = 0; i < persistantScenesAssets.Length; i++) {
 					var scenePath = AssetDatabase.GetAssetPath(persistantScenesAssets[i]);
