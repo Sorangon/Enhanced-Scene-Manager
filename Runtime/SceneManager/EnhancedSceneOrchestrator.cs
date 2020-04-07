@@ -13,7 +13,6 @@ namespace SorangonToolset.EnhancedSceneManager.Internal {
 
         #region Callbacks
         private void Awake() {
-            EnhancedSceneManager.sceneOrchestrator = this;
             DontDestroyOnLoad(this);
         }
         #endregion

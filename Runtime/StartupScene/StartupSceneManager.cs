@@ -36,7 +36,6 @@ namespace SorangonToolset.EnhancedSceneManager.Internal {
         /// Initalize the scene system assigning the current scene list in the Enhanced Scene Manager and loading the default Scene Bundle
         /// </summary>
         private void Initialize() {
-            Debug.Log("Current scene list : " + (EnhancedSceneManager.GetCurrentSceneList() != null ? "Enabled" : "Null"));
             EnhancedSceneManager.LoadSceneBundle(EnhancedSceneManager.GetCurrentSceneList().DefaultSceneBundle);
         }
         #endregion

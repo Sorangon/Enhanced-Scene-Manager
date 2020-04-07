@@ -5,6 +5,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using SorangonToolset.EnhancedSceneManager.Internal;
+using UnityEditor;
 
 namespace SorangonToolset.EnhancedSceneManager {
 	/// <summary>
@@ -17,7 +18,7 @@ namespace SorangonToolset.EnhancedSceneManager {
 		private static bool isLoading = false;
 		private static bool isUnloading = false;
 
-		internal static EnhancedSceneOrchestrator sceneOrchestrator = null;
+		private static EnhancedSceneOrchestrator sceneOrchestrator = null;
 		#endregion
 
 		#region Events and Delegates
@@ -71,6 +72,7 @@ namespace SorangonToolset.EnhancedSceneManager {
         public static void LoadSceneBundle(SceneBundle bundle, bool async = false) {
 			if(!CanLoad(bundle)) return;
 			onTriggerLoading?.Invoke();
+			if(sceneOrchestrator == null) InstantiateSceneOrchestrator();
 			sceneOrchestrator.StartLoadingCoroutine(LoadingProcessCoroutine(bundle, async)); //Call a start coroutine on the scene oorchestrator
 		}
 		
@@ -260,6 +262,17 @@ namespace SorangonToolset.EnhancedSceneManager {
 			onSceneAllUnloaded?.Invoke();
 
 			yield return null;
+		}
+        #endregion
+
+        #region Scene Orchestrator
+		/// <summary>
+		/// Instantaite abd initialize a scene orchestrator
+		/// </summary>
+		private static void InstantiateSceneOrchestrator() {
+			EnhancedSceneOrchestrator prefab = Resources.Load<EnhancedSceneOrchestrator>("SceneOrchestrator");
+			sceneOrchestrator = Object.Instantiate(prefab);
+			Object.DontDestroyOnLoad(sceneOrchestrator);
 		}
         #endregion
     }
