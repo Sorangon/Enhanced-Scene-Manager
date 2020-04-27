@@ -14,6 +14,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
         #region Current
         private bool hasSimilarReferences = false;
         private bool hasNullReferences = false;
+        private bool updateBuildSettingsFlag = false;
         #endregion
 
         #region Serialized Properties
@@ -78,7 +79,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 
                     //Update build scenes
                     if(target == EnhancedSceneManager.GetCurrentSceneList()) {
-                        UpdateBuildSettings();
+                        updateBuildSettingsFlag = true;
                     }
                 }
             };
@@ -95,13 +96,15 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
         public override void OnInspectorGUI() {
             serializedObject.Update();
 
+            if(updateBuildSettingsFlag) updateBuildSettingsFlag = false;
+
             EditorGUILayout.PropertyField(persistantSceneBundle);
 
             GUILayout.Space(8f);
             EditorGUI.BeginChangeCheck();
             sceneBundleList.DoLayoutList();
             if(EditorGUI.EndChangeCheck()) {
-                UpdateBuildSettings();
+                updateBuildSettingsFlag = true;
             }
 
             EditorGUILayout.Separator();
@@ -123,6 +126,9 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
             }
 
             serializedObject.ApplyModifiedProperties();
+            if(updateBuildSettingsFlag) {
+                UpdateBuildSettings();
+            }
         }
 
         private void OnDisable() {
@@ -156,7 +162,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
 
                 //Update build scenes only if new scenes are added
                 if(target == EnhancedSceneManager.GetCurrentSceneList()) {
-                    UpdateBuildSettings();
+                    updateBuildSettingsFlag = true;
                 }
 
             } else {
@@ -196,7 +202,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
         /// On undo callback
         /// </summary>
         private void OnUndo() {
-            UpdateBuildSettings();
+            updateBuildSettingsFlag = true;
         }
         #endregion
     }

@@ -64,7 +64,6 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor.Build {
                 foreach(SceneAsset sceneAsset in sceneAssets) {
                     var buildScene = new EditorBuildSettingsScene(AssetDatabase.GetAssetPath(sceneAsset), true);
 
-
                     if(!BuildContainsScene(buildScene.path)) {
                         buildSettingsScenes.Add(buildScene);
                     }
