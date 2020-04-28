@@ -74,6 +74,7 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
         public static bool IsPersistantScene(this SceneAsset scene) {
             if(scene == null) return false;
             SceneBundleList currentList = EnhancedSceneManager.GetCurrentSceneList();
+            if(currentList == null) return false;
             if(currentList.PersistantScenesBundle == null) return false;
 
             for(int i = 0; i < currentList.PersistantScenesBundle.ScenesCount; i++) {
