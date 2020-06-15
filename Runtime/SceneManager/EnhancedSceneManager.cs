@@ -5,7 +5,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using SorangonToolset.EnhancedSceneManager.Internal;
-using UnityEditor;
 
 namespace SorangonToolset.EnhancedSceneManager {
 	/// <summary>
@@ -14,6 +13,7 @@ namespace SorangonToolset.EnhancedSceneManager {
 	public static class EnhancedSceneManager {
 		#region Current
 		private static SceneBundleList currentSceneList = null;
+		private static SceneBundle currentSceneBundle = null;
 		private static Scene setActiveScene;
 		private static bool isLoading = false;
 		private static bool isUnloading = false;
@@ -21,8 +21,12 @@ namespace SorangonToolset.EnhancedSceneManager {
 		private static EnhancedSceneOrchestrator sceneOrchestrator = null;
 		#endregion
 
-		#region Events and Delegates
-		public delegate void SceneLoadingAction();
+		#region Properties
+		public static SceneBundle CurrentSceneBundle => currentSceneBundle;
+        #endregion
+
+        #region Events and Delegates
+        public delegate void SceneLoadingAction();
 		public static event SceneLoadingAction onTriggerLoading, onSceneAllLoaded, onSceneAllUnloaded;
         #endregion
 
@@ -208,6 +212,7 @@ namespace SorangonToolset.EnhancedSceneManager {
 
 			isLoading = false;
 			SceneManager.SetActiveScene(setActiveScene);
+			currentSceneBundle = bundle;
 			onSceneAllLoaded?.Invoke();
 
 			sceneOrchestrator.StopLoadingCoroutine(); //Stops the coroutine handler
