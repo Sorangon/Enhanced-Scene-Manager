@@ -136,12 +136,16 @@ namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(description);
             
-            EditorGUILayout.Space();
+            GUILayout.Space(20f);
+            EditorUtils.BeginColorField(EditorUtils.validColor);
+            if(GUILayout.Button("Open")) {
+                EditorEnhancedSceneManager.OpenSceneBundle(target as SceneBundle);
+            }
+            EditorUtils.EndColorField();
 
             if(GUILayout.Button("Add Opened Scenes")) {
                 AddOpenedScenes();
             }
-
             serializedObject.ApplyModifiedProperties();
         }
 

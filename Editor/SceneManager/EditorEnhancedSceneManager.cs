@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using SorangonToolset.EnhancedSceneManager.CoreEditor.Build;
-using SorangonToolset.EnhancedSceneManager.Internal;
 
 namespace SorangonToolset.EnhancedSceneManager.CoreEditor {
     /// <summary>
